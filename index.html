@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>มือสองสนุกเกอร์ | ระบบแลกเปลี่ยน/ส่งต่อสิ่งของมือสอง</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="topbar">
+  <div class="brand">♻️ <span>มือสองสนุกเกอร์</span></div>
+  <nav>
+    <a href="#home">หน้าแรก</a>
+    <a href="#products">สินค้า</a>
+    <a href="#sell">ลงประกาศ</a>
+    <a href="#chat">แชท</a>
+    <a href="#profile">โปรไฟล์</a>
+  </nav>
+  <button class="login-btn" onclick="openModal('loginModal')">เข้าสู่ระบบ</button>
+</header>
+
+<main>
+<section id="home" class="hero">
+  <div>
+    <span class="pill">PSRU • Student Second-hand Community</span>
+    <h1>ของที่ไม่ได้ใช้<br><b>ส่งต่อให้คนที่ต้องการ</b></h1>
+    <p>แพลตฟอร์มกลางสำหรับนักศึกษาในการขาย แลกเปลี่ยน หรือแจกสิ่งของมือสองภายในมหาวิทยาลัย</p>
+    <div class="hero-actions">
+      <a class="primary" href="#products">ค้นหาสินค้า</a>
+      <a class="secondary" href="#sell">ลงประกาศ</a>
+    </div>
+  </div>
+  <div class="hero-card">
+    <div class="emoji">📦</div>
+    <h3>โพสต์ง่าย ค้นหาสะดวก</h3>
+    <p>ติดต่อผู้ขายผ่านแชทได้ทันที และเปลี่ยนสถานะเป็น “ขายแล้ว/แจกแล้ว” ได้</p>
+  </div>
+</section>
+
+<section class="stats">
+  <div><strong id="statProducts">0</strong><span>ประกาศทั้งหมด</span></div>
+  <div><strong>4</strong><span>สมาชิกทีม</span></div>
+  <div><strong>3 วินาที</strong><span>เป้าหมายการตอบสนอง</span></div>
+</section>
+
+<section id="products" class="section">
+  <div class="section-head">
+    <div>
+      <span class="eyebrow">MARKETPLACE</span>
+      <h2>สินค้าล่าสุด</h2>
+    </div>
+    <button class="secondary" onclick="seedDemo()">โหลดข้อมูลตัวอย่าง</button>
+  </div>
+
+  <div class="filters">
+    <input id="searchInput" placeholder="🔎 ค้นหาชื่อสินค้า..." oninput="renderProducts()">
+    <select id="categoryFilter" onchange="renderProducts()">
+      <option value="">ทุกหมวดหมู่</option>
+      <option>หนังสือ</option><option>เสื้อผ้า</option><option>อุปกรณ์การเรียน</option>
+      <option>อุปกรณ์ไอที</option><option>ของใช้ทั่วไป</option>
+    </select>
+    <select id="statusFilter" onchange="renderProducts()">
+      <option value="">ทุกสถานะ</option><option value="available">พร้อมใช้งาน</option>
+      <option value="sold">ขายแล้ว</option><option value="free">แจกแล้ว</option>
+    </select>
+  </div>
+  <div id="productGrid" class="grid"></div>
+</section>
+
+<section id="sell" class="section light">
+  <div class="section-head">
+    <div><span class="eyebrow">POST ITEM</span><h2>ลงประกาศสิ่งของ</h2></div>
+  </div>
+  <form id="productForm" class="form-card">
+    <div class="form-grid">
+      <label>ชื่อสินค้า<input id="pName" required placeholder="เช่น หนังสือเรียน"></label>
+      <label>หมวดหมู่<select id="pCategory" required><option value="">เลือกหมวด</option><option>หนังสือ</option><option>เสื้อผ้า</option><option>อุปกรณ์การเรียน</option><option>อุปกรณ์ไอที</option><option>ของใช้ทั่วไป</option></select></label>
+      <label>ราคา (บาท)<input id="pPrice" type="number" min="0" placeholder="0 ถ้าแจกฟรี"></label>
+      <label>สภาพสินค้า<input id="pCondition" required placeholder="เช่น สภาพดี"></label>
+      <label class="full">รายละเอียด<textarea id="pDescription" required placeholder="รายละเอียดสินค้า..."></textarea></label>
+      <label class="full">รูปภาพ URL (ถ้ามี)<input id="pImage" placeholder="https://..."></label>
+    </div>
+    <button class="primary" type="submit">📌 ลงประกาศ</button>
+  </form>
+</section>
+
+<section id="chat" class="section">
+  <div class="section-head"><div><span class="eyebrow">CHAT</span><h2>แชทกับผู้ขาย</h2></div></div>
+  <div class="chat-box">
+    <aside class="chat-list">
+      <button class="chat-person active"><b>นัท</b><small>หนังสือเรียนปี 1</small></button>
+      <button class="chat-person"><b>เมย์</b><small>กระเป๋าเป้มือสอง</small></button>
+    </aside>
+    <div class="conversation">
+      <div id="messages">
+        <div class="msg other">สวัสดีครับ สนใจหนังสือเล่มนี้สอบถามได้เลยครับ</div>
+        <div class="msg me">ยังมีสินค้าอยู่ไหมครับ?</div>
+      </div>
+      <form id="chatForm" class="chat-input">
+        <input id="chatText" required placeholder="พิมพ์ข้อความ...">
+        <button class="primary">ส่ง</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<section id="profile" class="section light">
+  <div class="section-head"><div><span class="eyebrow">PROFILE</span><h2>โปรไฟล์ผู้ใช้งาน</h2></div></div>
+  <div class="profile-card">
+    <div class="avatar">👤</div>
+    <div><h3>ผู้ใช้งานตัวอย่าง</h3><p>นักศึกษามหาวิทยาลัยราชภัฏพิบูลสงคราม</p><button class="secondary" onclick="openModal('loginModal')">แก้ไขข้อมูลส่วนตัว</button></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <b>มือสองสนุกเกอร์</b> — ระบบแลกเปลี่ยน/ส่งต่อสิ่งของมือสอง
+  <small>Prototype สำหรับโครงงาน Implementation + Git</small>
+</footer>
+
+<div id="loginModal" class="modal">
+  <div class="modal-card">
+    <button class="close" onclick="closeModal('loginModal')">×</button>
+    <h2>เข้าสู่ระบบ</h2>
+    <form onsubmit="login(event)">
+      <label>อีเมล<input type="email" required placeholder="student@example.com"></label>
+      <label>รหัสผ่าน<input type="password" required placeholder="••••••••"></label>
+      <button class="primary full-btn">เข้าสู่ระบบ</button>
+    </form>
+  </div>
+</div>
+<script src="script.js"></script>
+</body>
+</html>
