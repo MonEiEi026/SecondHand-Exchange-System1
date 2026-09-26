@@ -1,134 +1,722 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>มือสองสนุกเกอร์ | ระบบแลกเปลี่ยน/ส่งต่อสิ่งของมือสอง</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campus Swap & Share - ระบบแลกเปลี่ยนสิ่งของภายในมหาวิทยาลัย</title>
+    <!-- Google Fonts & FontAwesome Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --primary: #4F46E5;
+            --primary-hover: #4338CA;
+            --secondary: #10B981;
+            --danger: #EF4444;
+            --bg: #F8FAFC;
+            --card-bg: #FFFFFF;
+            --text-main: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text-main);
+            padding-bottom: 60px;
+        }
+
+        /* --- Auth Section (Login / Register Modal Screen) --- */
+        .auth-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1E1B4B 0%, #312E81 100%);
+            z-index: 2000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1.5rem;
+        }
+
+        .auth-card {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 440px;
+            padding: 2.5rem;
+            border-radius: 20px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+            text-align: center;
+        }
+
+        .auth-header {
+            margin-bottom: 1.8rem;
+        }
+
+        .auth-header i {
+            font-size: 2.8rem;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .auth-header h2 {
+            font-size: 1.6rem;
+            font-weight: 700;
+        }
+
+        .auth-header p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-top: 0.3rem;
+        }
+
+        .university-badge-notice {
+            background: #FEF3C7;
+            border: 1px solid #FCD34D;
+            color: #92400E;
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            margin-bottom: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-align: left;
+        }
+
+        .auth-toggle-tabs {
+            display: flex;
+            border-bottom: 2px solid var(--border);
+            margin-bottom: 1.5rem;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 0.6rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .tab-btn.active {
+            color: var(--primary);
+            border-color: var(--primary);
+        }
+
+        .form-group {
+            margin-bottom: 1.2rem;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.4rem;
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            font-size: 0.95rem;
+            outline: none;
+            transition: all 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 0.75rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            border: none;
+            transition: all 0.2s;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* --- Navbar --- */
+        header {
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0.8rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .user-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #EEF2FF;
+            padding: 6px 14px;
+            border-radius: 9999px;
+            color: var(--primary);
+            font-weight: 500;
+            font-size: 0.875rem;
+        }
+
+        .btn-logout {
+            background: #FEE2E2;
+            color: var(--danger);
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            font-size: 0.85rem;
+        }
+
+        /* --- Main Content --- */
+        .hero {
+            background: linear-gradient(135deg, #4F46E5 0%, #3B82F6 100%);
+            color: white;
+            padding: 2.5rem 1.5rem;
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+
+        /* --- Search & Filter Bar --- */
+        .filter-section {
+            background: var(--card-bg);
+            padding: 1.2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 260px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+        }
+
+        .filter-select {
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background-color: white;
+        }
+
+        /* --- Product Grid --- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            border: 1px solid var(--border);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.2s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .img-wrapper {
+            position: relative;
+            height: 190px;
+            background: #E2E8F0;
+        }
+
+        .product-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .badge-type {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .badge-sale { background-color: var(--primary); }
+        .badge-free { background-color: var(--secondary); }
+        .badge-sold { background-color: var(--text-muted); }
+
+        .product-body {
+            padding: 1.2rem;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+        }
+
+        .product-title {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .product-price {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.8rem;
+        }
+
+        .seller-info {
+            font-size: 0.825rem;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border);
+            padding-top: 0.8rem;
+            margin-top: auto;
+        }
+
+        /* Modal Post */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+        }
+
+        .modal-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+        }
+    </style>
 </head>
 <body>
-<header class="topbar">
-  <div class="brand">♻️ <span>มือสองสนุกเกอร์</span></div>
-  <nav>
-    <a href="#home">หน้าแรก</a>
-    <a href="#products">สินค้า</a>
-    <a href="#sell">ลงประกาศ</a>
-    <a href="#chat">แชท</a>
-    <a href="#profile">โปรไฟล์</a>
-  </nav>
-  <button class="login-btn" onclick="openModal('loginModal')">เข้าสู่ระบบ</button>
-</header>
 
-<main>
-<section id="home" class="hero">
-  <div>
-    <span class="pill">PSRU • Student Second-hand Community</span>
-    <h1>ของที่ไม่ได้ใช้<br><b>ส่งต่อให้คนที่ต้องการ</b></h1>
-    <p>แพลตฟอร์มกลางสำหรับนักศึกษาในการขาย แลกเปลี่ยน หรือแจกสิ่งของมือสองภายในมหาวิทยาลัย</p>
-    <div class="hero-actions">
-      <a class="primary" href="#products">ค้นหาสินค้า</a>
-      <a class="secondary" href="#sell">ลงประกาศ</a>
+    <!-- ==================== หน้าต่าง LOGIN / REGISTER (Authentication) ==================== -->
+    <div class="auth-overlay" id="authScreen">
+        <div class="auth-card">
+            <div class="auth-header">
+                <i class="fa-solid fa-graduation-cap"></i>
+                <h2>Campus Swap & Share</h2>
+                <p>ระบบแลกเปลี่ยนสิ่งของสำหรับนิสิต/นักศึกษา</p>
+            </div>
+
+            <div class="university-badge-notice">
+                <i class="fa-solid fa-shield-halved"></i>
+                <span>จำกัดสิทธิ์เฉพาะบุคลากรและนักศึกษาที่ใช้อีเมลมหาวิทยาลัยเท่านั้น</span>
+            </div>
+
+            <div class="auth-toggle-tabs">
+                <button class="tab-btn active" id="loginTabBtn" onclick="switchAuthTab('login')">เข้าสู่ระบบ</button>
+                <button class="tab-btn" id="registerTabBtn" onclick="switchAuthTab('register')">ลงทะเบียน</button>
+            </div>
+
+            <!-- ฟอร์ม LOGIN -->
+            <form id="loginForm" onsubmit="handleLogin(event)">
+                <div class="form-group">
+                    <label>อีเมลมหาวิทยาลัย (.ac.th / .th)</label>
+                    <input type="email" class="form-control" id="loginEmail" required placeholder="std.6xxxxxxx@g.swu.ac.th">
+                </div>
+                <div class="form-group">
+                    <label>รหัสผ่าน</label>
+                    <input type="password" class="form-control" id="loginPassword" required placeholder="••••••••">
+                </div>
+                <button type="submit" class="btn btn-primary">เข้าสู่ระบบ</button>
+            </form>
+
+            <!-- ฟอร์ม REGISTER -->
+            <form id="registerForm" style="display: none;" onsubmit="handleRegister(event)">
+                <div class="form-group">
+                    <label>ชื่อ-นามสกุล / ชื่อเล่น</label>
+                    <input type="text" class="form-control" id="regName" required placeholder="สนุ๊กเกอร์ (ไอที ปี 2)">
+                </div>
+                <div class="form-group">
+                    <label>อีเมลมหาวิทยาลัย (ต้องลงท้ายด้วย .ac.th หรือ .th)</label>
+                    <input type="email" class="form-control" id="regEmail" required placeholder="student@university.ac.th">
+                </div>
+                <div class="form-group">
+                    <label>กำหนดรหัสผ่าน</label>
+                    <input type="password" class="form-control" id="regPassword" required placeholder="อย่างน้อย 6 ตัวอักษร" minlength="6">
+                </div>
+                <button type="submit" class="btn btn-primary">ยืนยันสมัครสมาชิก</button>
+            </form>
+        </div>
     </div>
-  </div>
-  <div class="hero-card">
-    <div class="emoji">📦</div>
-    <h3>โพสต์ง่าย ค้นหาสะดวก</h3>
-    <p>ติดต่อผู้ขายผ่านแชทได้ทันที และเปลี่ยนสถานะเป็น “ขายแล้ว/แจกแล้ว” ได้</p>
-  </div>
-</section>
 
-<section class="stats">
-  <div><strong id="statProducts">0</strong><span>ประกาศทั้งหมด</span></div>
-  <div><strong>4</strong><span>สมาชิกทีม</span></div>
-  <div><strong>3 วินาที</strong><span>เป้าหมายการตอบสนอง</span></div>
-</section>
+    <!-- ==================== หน้าจอหลักแอปพลิเคชัน (MAIN APP) ==================== -->
+    <div id="mainApp" style="display: none;">
+        
+        <header>
+            <div class="nav-container">
+                <a href="#" class="logo">
+                    <i class="fa-solid fa-arrows-rotate"></i>
+                    <span>CampusSwap</span>
+                </a>
+                <div class="user-actions">
+                    <div class="user-badge">
+                        <i class="fa-solid fa-user-check" style="color: var(--secondary);"></i>
+                        <span id="currentUserDisplay">สนุ๊กเกอร์</span>
+                    </div>
+                    <button class="btn btn-primary" onclick="openModal()" style="width: auto;">
+                        <i class="fa-solid fa-plus"></i> ลงประกาศ
+                    </button>
+                    <button class="btn-logout" onclick="handleLogout()">
+                        <i class="fa-solid fa-right-from-bracket"></i> ออกจากระบบ
+                    </button>
+                </div>
+            </div>
+        </header>
 
-<section id="products" class="section">
-  <div class="section-head">
-    <div>
-      <span class="eyebrow">MARKETPLACE</span>
-      <h2>สินค้าล่าสุด</h2>
+        <section class="hero">
+            <h1>ส่งต่อ & แลกเปลี่ยนสิ่งของในมหาวิทยาลัย</h1>
+            <p>แพลตฟอร์มปลอดภัยเฉพาะนักศึกษา ตรวจสอบสิทธิ์ด้วยอีเมลสถาบันแล้ว</p>
+        </section>
+
+        <div class="container">
+            <div class="filter-section">
+                <div class="search-box">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="searchInput" placeholder="ค้นหาสินค้า เช่น หนังสือ, พัดลม, จอคอม..." onkeyup="filterItems()">
+                </div>
+                <select class="filter-select" id="categoryFilter" onchange="filterItems()">
+                    <option value="all">ทุกหมวดหมู่</option>
+                    <option value="อุปกรณ์การเรียน">อุปกรณ์การเรียน</option>
+                    <option value="เครื่องใช้ไฟฟ้า">เครื่องใช้ไฟฟ้า</option>
+                    <option value="เสื้อผ้า/รองเท้า">เสื้อผ้า/รองเท้า</option>
+                    <option value="ของใช้ทั่วไป">ของใช้ทั่วไป</option>
+                </select>
+                <select class="filter-select" id="typeFilter" onchange="filterItems()">
+                    <option value="all">ทุกประเภท</option>
+                    <option value="sale">โพสต์ขาย</option>
+                    <option value="free">แจกฟรี</option>
+                </select>
+            </div>
+
+            <div style="margin-bottom: 1rem;">
+                <h2>รายการสิ่งของมือสองภายในมอ (<span id="itemCount">0</span>)</h2>
+            </div>
+
+            <div class="product-grid" id="productGrid"></div>
+        </div>
+
+        <!-- Modal Post -->
+        <div class="modal" id="postModal">
+            <div class="modal-content">
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem;">
+                    <h3>ลงประกาศสิ่งของ</h3>
+                    <button onclick="closeModal()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">&times;</button>
+                </div>
+                <form id="postForm" onsubmit="handlePostSubmit(event)">
+                    <div class="form-group">
+                        <label>ชื่อสิ่งของ</label>
+                        <input type="text" class="form-control" id="postTitle" required placeholder="เช่น หนังสือเรียน C++">
+                    </div>
+                    <div class="form-group">
+                        <label>ประเภท</label>
+                        <select class="form-control" id="postType" onchange="togglePriceField(this.value)">
+                            <option value="sale">ขายสินค้า</option>
+                            <option value="free">แจกฟรี</option>
+                        </select>
+                    </div>
+                    <div class="form-group" id="priceFieldGroup">
+                        <label>ราคา (บาท)</label>
+                        <input type="number" class="form-control" id="postPrice" min="0" placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>หมวดหมู่</label>
+                        <select class="form-control" id="postCategory">
+                            <option value="อุปกรณ์การเรียน">อุปกรณ์การเรียน</option>
+                            <option value="เครื่องใช้ไฟฟ้า">เครื่องใช้ไฟฟ้า</option>
+                            <option value="เสื้อผ้า/รองเท้า">เสื้อผ้า/รองเท้า</option>
+                            <option value="ของใช้ทั่วไป">ของใช้ทั่วไป</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>URL รูปภาพสินค้า</label>
+                        <input type="url" class="form-control" id="postImg" placeholder="https://images.unsplash.com/...">
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="margin-top:1rem;">ยืนยันโพสต์</button>
+                </form>
+            </div>
+        </div>
+
     </div>
-    <button class="secondary" onclick="seedDemo()">โหลดข้อมูลตัวอย่าง</button>
-  </div>
 
-  <div class="filters">
-    <input id="searchInput" placeholder="🔎 ค้นหาชื่อสินค้า..." oninput="renderProducts()">
-    <select id="categoryFilter" onchange="renderProducts()">
-      <option value="">ทุกหมวดหมู่</option>
-      <option>หนังสือ</option><option>เสื้อผ้า</option><option>อุปกรณ์การเรียน</option>
-      <option>อุปกรณ์ไอที</option><option>ของใช้ทั่วไป</option>
-    </select>
-    <select id="statusFilter" onchange="renderProducts()">
-      <option value="">ทุกสถานะ</option><option value="available">พร้อมใช้งาน</option>
-      <option value="sold">ขายแล้ว</option><option value="free">แจกแล้ว</option>
-    </select>
-  </div>
-  <div id="productGrid" class="grid"></div>
-</section>
+    <script>
+        let currentUser = null;
 
-<section id="sell" class="section light">
-  <div class="section-head">
-    <div><span class="eyebrow">POST ITEM</span><h2>ลงประกาศสิ่งของ</h2></div>
-  </div>
-  <form id="productForm" class="form-card">
-    <div class="form-grid">
-      <label>ชื่อสินค้า<input id="pName" required placeholder="เช่น หนังสือเรียน"></label>
-      <label>หมวดหมู่<select id="pCategory" required><option value="">เลือกหมวด</option><option>หนังสือ</option><option>เสื้อผ้า</option><option>อุปกรณ์การเรียน</option><option>อุปกรณ์ไอที</option><option>ของใช้ทั่วไป</option></select></label>
-      <label>ราคา (บาท)<input id="pPrice" type="number" min="0" placeholder="0 ถ้าแจกฟรี"></label>
-      <label>สภาพสินค้า<input id="pCondition" required placeholder="เช่น สภาพดี"></label>
-      <label class="full">รายละเอียด<textarea id="pDescription" required placeholder="รายละเอียดสินค้า..."></textarea></label>
-      <label class="full">รูปภาพ URL (ถ้ามี)<input id="pImage" placeholder="https://..."></label>
-    </div>
-    <button class="primary" type="submit">📌 ลงประกาศ</button>
-  </form>
-</section>
+        // รายการสินค้ามือสองจำลองจำนวน 20 รายการภายในมหาวิทยาลัย
+        let items = [
+            { id: 1, title: "หนังสือวิศวกรรมซอฟต์แวร์ SDLC + Git", type: "sale", price: 150, category: "อุปกรณ์การเรียน", status: "available", seller: "ต้น (ต้น@g.swu.ac.th)", img: "https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?w=400" },
+            { id: 2, title: "โคมไฟอ่านหนังสือ LED ปรับแสงได้", type: "free", price: 0, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "ม่อน (ม่อน@chula.ac.th)", img: "https://images.unsplash.com/photo-1507473885765-e6ed057f782c?w=400" },
+            { id: 3, title: "พัดลมพกพา USB ตั้งโต๊ะอ่านหนังสือ", type: "sale", price: 80, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "มิน (มิน@ku.th)", img: "https://images.unsplash.com/photo-1618941723628-e27e14c45b3d?w=400" },
+            { id: 4, title: "เสื้อช็อปนักศึกษา ไซส์ L สภาพ 95%", type: "sale", price: 200, category: "เสื้อผ้า/รองเท้า", status: "available", seller: "สนุ๊กเกอร์ (สนุ๊กเกอร์@g.swu.ac.th)", img: "https://images.unsplash.com/photo-1521572267360-ee0c2909d518?w=400" },
+            { id: 5, title: "เครื่องคิดเลขวิทยาศาสตร์ Casio FX-991EX", type: "sale", price: 450, category: "อุปกรณ์การเรียน", status: "available", seller: "นัท (นัท@kmitl.ac.th)", img: "https://images.unsplash.com/photo-1611125832047-1d7ad1e8e48f?w=400" },
+            { id: 6, title: "เก้าอี้ทำงานในหอพัก ปรับระดับได้", type: "free", price: 0, category: "ของใช้ทั่วไป", status: "available", seller: "เมย์ (เมย์@tu.ac.th)", img: "https://images.unsplash.com/photo-1580481072645-022f9a6d1270?w=400" },
+            { id: 7, title: "กระเป๋าเป้ใส่โน้ตบุ๊ก 15.6 นิ้ว กันน้ำ", type: "sale", price: 250, category: "ของใช้ทั่วไป", status: "available", seller: "เจมส์ (เจมส์@mahidol.ac.th)", img: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=400" },
+            { id: 8, title: "ไมโครโฟนตั้งโต๊ะ USB สำหรับเรียนออนไลน์", type: "sale", price: 320, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "มาร์ค (มาร์ค@cmic.ac.th)", img: "https://images.unsplash.com/photo-1590602847861-f357a9332bbc?w=400" },
+            { id: 9, title: "จอคอมพิวเตอร์ 22 นิ้ว Full HD (นัดรับใต้ตึก)", type: "sale", price: 1200, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "ภูมิ (ภูมิ@g.swu.ac.th)", img: "https://images.unsplash.com/photo-1527443224154-c4a3942d3acf?w=400" },
+            { id: 10, title: "หนังสือติวภาษาอังกฤษ TOEIC สภาพใหม่ไม่มีรอยขีดเขียน", type: "sale", price: 100, category: "อุปกรณ์การเรียน", status: "available", seller: "พลอย (พลอย@chula.ac.th)", img: "https://images.unsplash.com/photo-1497633762265-9d179a990aa6?w=400" },
+            { id: 11, title: "กาน้ำร้อนไฟฟ้าขนาดเล็ก 1.2 ลิตร ชงมาม่าหอพัก", type: "sale", price: 120, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "บาส (บาส@ku.th)", img: "https://images.unsplash.com/photo-1594212699903-ec8a3eca50f6?w=400" },
+            { id: 12, title: "รองเท้าคัทชูพิธีการชาย เบอร์ 42", type: "free", price: 0, category: "เสื้อผ้า/รองเท้า", status: "available", seller: "ก็อต (ก็อต@kmitl.ac.th)", img: "https://images.unsplash.com/photo-1614252235316-8c857d38b5f4?w=400" },
+            { id: 13, title: "โต๊ะญี่ปุ่นพับได้ สำหรับนั่งอ่านหนังสือบนเตียง", type: "sale", price: 90, category: "ของใช้ทั่วไป", status: "available", seller: "แนน (แนน@tu.ac.th)", img: "https://images.unsplash.com/photo-1530018607912-eff2daa1bac4?w=400" },
+            { id: 14, title: "คีย์บอร์ดบลูทูธสำหรับ iPad / Tablet", type: "sale", price: 290, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "โอ๊ค (โอ๊ค@mahidol.ac.th)", img: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=400" },
+            { id: 15, title: "สีน้ำสำหรับเรียนวิชาศิลปะ เหลือ 80%", type: "free", price: 0, category: "อุปกรณ์การเรียน", status: "available", seller: "ฟ้า (ฟ้า@g.swu.ac.th)", img: "https://images.unsplash.com/photo-1513364776144-60967b0f800f?w=400" },
+            { id: 16, title: "ราวตากผ้าเหล็กขนาดเล็ก เหมาะกับระเบียงหอพัก", type: "sale", price: 150, category: "ของใช้ทั่วไป", status: "available", seller: "พีร์ (พีร์@chula.ac.th)", img: "https://images.unsplash.com/photo-1517677208171-0bc6725a3e60?w=400" },
+            { id: 17, title: "หูฟังตัดเสียงรบกวน Bluetooth สภาพสวย", type: "sale", price: 550, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "ตาร์ (ตาร์@ku.th)", img: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400" },
+            { id: 18, title: "กระดาษ A4 สองหน้า 70g (เหลือ 3 รีม)", type: "sale", price: 180, category: "อุปกรณ์การเรียน", status: "available", seller: "วิว (วิว@kmitl.ac.th)", img: "https://images.unsplash.com/photo-1586075010923-2dd4570fb338?w=400" },
+            { id: 19, title: "เสื้อทรงบอยนิสิตหญิง สีขาว ถอดกระดุมออกแล้ว", type: "free", price: 0, category: "เสื้อผ้า/รองเท้า", status: "available", seller: "จิ๊บ (จิ๊บ@tu.ac.th)", img: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?w=400" },
+            { id: 20, title: "หม้อหุงข้าวไฟฟ้าขนาดเล็ก 1 ลิตร", type: "sale", price: 200, category: "เครื่องใช้ไฟฟ้า", status: "available", seller: "เต้ (เต้@g.swu.ac.th)", img: "https://images.unsplash.com/photo-1544233726-9f1d2b27be8b?w=400" }
+        ];
 
-<section id="chat" class="section">
-  <div class="section-head"><div><span class="eyebrow">CHAT</span><h2>แชทกับผู้ขาย</h2></div></div>
-  <div class="chat-box">
-    <aside class="chat-list">
-      <button class="chat-person active"><b>นัท</b><small>หนังสือเรียนปี 1</small></button>
-      <button class="chat-person"><b>เมย์</b><small>กระเป๋าเป้มือสอง</small></button>
-    </aside>
-    <div class="conversation">
-      <div id="messages">
-        <div class="msg other">สวัสดีครับ สนใจหนังสือเล่มนี้สอบถามได้เลยครับ</div>
-        <div class="msg me">ยังมีสินค้าอยู่ไหมครับ?</div>
-      </div>
-      <form id="chatForm" class="chat-input">
-        <input id="chatText" required placeholder="พิมพ์ข้อความ...">
-        <button class="primary">ส่ง</button>
-      </form>
-    </div>
-  </div>
-</section>
+        // สลับ Tab Login / Register
+        function switchAuthTab(tab) {
+            document.getElementById('loginTabBtn').classList.toggle('active', tab === 'login');
+            document.getElementById('registerTabBtn').classList.toggle('active', tab === 'register');
+            document.getElementById('loginForm').style.display = tab === 'login' ? 'block' : 'none';
+            document.getElementById('registerForm').style.display = tab === 'register' ? 'block' : 'none';
+        }
 
-<section id="profile" class="section light">
-  <div class="section-head"><div><span class="eyebrow">PROFILE</span><h2>โปรไฟล์ผู้ใช้งาน</h2></div></div>
-  <div class="profile-card">
-    <div class="avatar">👤</div>
-    <div><h3>ผู้ใช้งานตัวอย่าง</h3><p>นักศึกษามหาวิทยาลัยราชภัฏพิบูลสงคราม</p><button class="secondary" onclick="openModal('loginModal')">แก้ไขข้อมูลส่วนตัว</button></div>
-  </div>
-</section>
-</main>
+        // ตรวจสอบว่าใช้อีเมลมหาวิทยาลัยหรือไม่ (.ac.th หรือ .th)
+        function isUniversityEmail(email) {
+            const domain = email.toLowerCase().trim();
+            return domain.endsWith('.ac.th') || domain.endsWith('.edu') || domain.endsWith('.th');
+        }
 
-<footer>
-  <b>มือสองสนุกเกอร์</b> — ระบบแลกเปลี่ยน/ส่งต่อสิ่งของมือสอง
-  <small>Prototype สำหรับโครงงาน Implementation + Git</small>
-</footer>
+        // ระบบ Login
+        function handleLogin(e) {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value;
+            
+            if (!isUniversityEmail(email)) {
+                alert('⚠️ สิทธิ์เข้าถึงปฏิเสธ: ต้องใช้อีเมลสถาบันการศึกษา (.ac.th / .th) เท่านั้น');
+                return;
+            }
 
-<div id="loginModal" class="modal">
-  <div class="modal-card">
-    <button class="close" onclick="closeModal('loginModal')">×</button>
-    <h2>เข้าสู่ระบบ</h2>
-    <form onsubmit="login(event)">
-      <label>อีเมล<input type="email" required placeholder="student@example.com"></label>
-      <label>รหัสผ่าน<input type="password" required placeholder="••••••••"></label>
-      <button class="primary full-btn">เข้าสู่ระบบ</button>
-    </form>
-  </div>
-</div>
-<script src="script.js"></script>
+            currentUser = {
+                name: email.split('@')[0],
+                email: email
+            };
+
+            showMainApp();
+        }
+
+        // ระบบ Register
+        function handleRegister(e) {
+            e.preventDefault();
+            const name = document.getElementById('regName').value;
+            const email = document.getElementById('regEmail').value;
+
+            if (!isUniversityEmail(email)) {
+                alert('⚠️ การลงทะเบียนล้มเหลว: ระบบรองรับเฉพาะอีเมลนักศึกษา/บุคลากรภายในมหาวิทยาลัย (.ac.th / .th)');
+                return;
+            }
+
+            alert('✅ ยืนยันตัวตนสำเร็จ! ระบบได้อนุมัติบัญชีนักศึกษาเรียบร้อยแล้ว');
+            currentUser = { name, email };
+            showMainApp();
+        }
+
+        // แสดงหน้าแอปหลัก
+        function showMainApp() {
+            document.getElementById('authScreen').style.display = 'none';
+            document.getElementById('mainApp').style.display = 'block';
+            document.getElementById('currentUserDisplay').innerText = `${currentUser.name} (${currentUser.email})`;
+            renderGrid(items);
+        }
+
+        // ออกจากระบบ
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('mainApp').style.display = 'none';
+            document.getElementById('authScreen').style.display = 'flex';
+            document.getElementById('loginForm').reset();
+            document.getElementById('registerForm').reset();
+        }
+
+        // แสดงผลรายการสินค้า
+        function renderGrid(data) {
+            const grid = document.getElementById('productGrid');
+            document.getElementById('itemCount').innerText = data.length;
+            grid.innerHTML = '';
+
+            if (data.length === 0) {
+                grid.innerHTML = `<div style="grid-column: 1/-1; text-align: center; color: var(--text-muted); padding: 3rem 0;">
+                    <i class="fa-solid fa-box-open" style="font-size: 3rem; margin-bottom: 1rem;"></i>
+                    <p>ไม่พบรายการสินค้าที่คุณกำลังค้นหา</p>
+                </div>`;
+                return;
+            }
+
+            data.forEach(item => {
+                const isFree = item.type === 'free';
+                const isSold = item.status === 'sold';
+
+                const card = document.createElement('div');
+                card.className = 'product-card';
+                card.innerHTML = `
+                    <div class="img-wrapper">
+                        <img src="${item.img}" class="product-img">
+                        <span class="badge-type ${isSold ? 'badge-sold' : (isFree ? 'badge-free' : 'badge-sale')}">
+                            ${isSold ? 'ส่งต่อแล้ว' : (isFree ? 'แจกฟรี' : 'ขาย')}
+                        </span>
+                    </div>
+                    <div class="product-body">
+                        <div class="product-title">${item.title}</div>
+                        <div class="product-price">${isFree ? 'ฟรี' : item.price.toLocaleString() + ' บาท'}</div>
+                        <div class="seller-info">
+                            <i class="fa-solid fa-user-shield"></i> ${item.seller}
+                        </div>
+                        <div style="margin-top: 0.8rem; display: flex; gap: 0.5rem;">
+                            <button class="btn btn-primary" style="padding: 0.4rem; font-size:0.8rem;" onclick="alert('กำลังเปิดแชทกับผู้โพสต์: ${item.seller}')">แชทติดต่อ</button>
+                            ${!isSold ? `<button class="btn" style="background:#E2E8F0; padding:0.4rem; font-size:0.8rem;" onclick="markSold(${item.id})">เปลี่ยนสถานะ</button>` : ''}
+                        </div>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        function filterItems() {
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const type = document.getElementById('typeFilter').value;
+
+            const filtered = items.filter(item => {
+                const matchSearch = item.title.toLowerCase().includes(searchText);
+                const matchCategory = category === 'all' || item.category === category;
+                const matchType = type === 'all' || item.type === type;
+                return matchSearch && matchCategory && matchType;
+            });
+
+            renderGrid(filtered);
+        }
+
+        function openModal() { document.getElementById('postModal').style.display = 'flex'; }
+        function closeModal() { document.getElementById('postModal').style.display = 'none'; }
+        function togglePriceField(val) { document.getElementById('priceFieldGroup').style.display = val === 'free' ? 'none' : 'block'; }
+
+        function handlePostSubmit(e) {
+            e.preventDefault();
+            const newItem = {
+                id: Date.now(),
+                title: document.getElementById('postTitle').value,
+                type: document.getElementById('postType').value,
+                price: Number(document.getElementById('postPrice').value) || 0,
+                category: document.getElementById('postCategory').value,
+                status: 'available',
+                seller: `${currentUser.name} (${currentUser.email})`,
+                img: document.getElementById('postImg').value || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=400'
+            };
+            items.unshift(newItem);
+            filterItems();
+            closeModal();
+            document.getElementById('postForm').reset();
+            alert('ลงประกาศสิ่งของเรียบร้อยแล้ว!');
+        }
+
+        function markSold(id) {
+            const target = items.find(i => i.id === id);
+            if (target) { target.status = 'sold'; filterItems(); }
+        }
+    </script>
 </body>
 </html>
